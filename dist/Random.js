@@ -1,0 +1,58 @@
+"use strict";
+/*
+ * MIT License
+ *
+ * Copyright (c) 2019 Rémi Van Keisbelck
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Random = void 0;
+const Task_1 = require("./Task");
+const Result_1 = require("./Result");
+/**
+ * Generate Rantom numbers.
+ */
+class Random {
+    /**
+     * Generate a random int between lo and hi
+     * @param lo
+     * @param hi
+     */
+    static fromIntervalInclusive(lo, hi) {
+        return new RandomTask(lo, hi);
+    }
+}
+exports.Random = Random;
+class RandomTask extends Task_1.Task {
+    constructor(lo, hi) {
+        super();
+        this.lo = lo;
+        this.hi = hi;
+    }
+    execute(callback) {
+        callback((0, Result_1.ok)(randomIntFromInterval(this.lo, this.hi)));
+    }
+}
+function randomIntFromInterval(min, max) {
+    // min and max included
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiUmFuZG9tLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL1JhbmRvbS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBdUJHOzs7QUFFSCxpQ0FBOEI7QUFDOUIscUNBQXNDO0FBRXRDOztHQUVHO0FBQ0gsTUFBYSxNQUFNO0lBQ2pCOzs7O09BSUc7SUFDSCxNQUFNLENBQUMscUJBQXFCLENBQUMsRUFBVSxFQUFFLEVBQVU7UUFDakQsT0FBTyxJQUFJLFVBQVUsQ0FBQyxFQUFFLEVBQUUsRUFBRSxDQUFDLENBQUM7SUFDaEMsQ0FBQztDQUNGO0FBVEQsd0JBU0M7QUFFRCxNQUFNLFVBQVcsU0FBUSxXQUFtQjtJQUkxQyxZQUFZLEVBQVUsRUFBRSxFQUFVO1FBQ2hDLEtBQUssRUFBRSxDQUFDO1FBQ1IsSUFBSSxDQUFDLEVBQUUsR0FBRyxFQUFFLENBQUM7UUFDYixJQUFJLENBQUMsRUFBRSxHQUFHLEVBQUUsQ0FBQztJQUNmLENBQUM7SUFFRCxPQUFPLENBQUMsUUFBNEM7UUFDbEQsUUFBUSxDQUFDLElBQUEsV0FBRSxFQUFDLHFCQUFxQixDQUFDLElBQUksQ0FBQyxFQUFFLEVBQUUsSUFBSSxDQUFDLEVBQUUsQ0FBQyxDQUFDLENBQUMsQ0FBQztJQUN4RCxDQUFDO0NBQ0Y7QUFFRCxTQUFTLHFCQUFxQixDQUFDLEdBQVcsRUFBRSxHQUFXO0lBQ3JELHVCQUF1QjtJQUN2QixPQUFPLElBQUksQ0FBQyxLQUFLLENBQUMsSUFBSSxDQUFDLE1BQU0sRUFBRSxHQUFHLENBQUMsR0FBRyxHQUFHLEdBQUcsR0FBRyxDQUFDLENBQUMsR0FBRyxHQUFHLENBQUMsQ0FBQztBQUMzRCxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLypcbiAqIE1JVCBMaWNlbnNlXG4gKlxuICogQ29weXJpZ2h0IChjKSAyMDE5IFLDqW1pIFZhbiBLZWlzYmVsY2tcbiAqXG4gKiBQZXJtaXNzaW9uIGlzIGhlcmVieSBncmFudGVkLCBmcmVlIG9mIGNoYXJnZSwgdG8gYW55IHBlcnNvbiBvYnRhaW5pbmcgYSBjb3B5XG4gKiBvZiB0aGlzIHNvZnR3YXJlIGFuZCBhc3NvY2lhdGVkIGRvY3VtZW50YXRpb24gZmlsZXMgKHRoZSBcIlNvZnR3YXJlXCIpLCB0byBkZWFsXG4gKiBpbiB0aGUgU29mdHdhcmUgd2l0aG91dCByZXN0cmljdGlvbiwgaW5jbHVkaW5nIHdpdGhvdXQgbGltaXRhdGlvbiB0aGUgcmlnaHRzXG4gKiB0byB1c2UsIGNvcHksIG1vZGlmeSwgbWVyZ2UsIHB1Ymxpc2gsIGRpc3RyaWJ1dGUsIHN1YmxpY2Vuc2UsIGFuZC9vciBzZWxsXG4gKiBjb3BpZXMgb2YgdGhlIFNvZnR3YXJlLCBhbmQgdG8gcGVybWl0IHBlcnNvbnMgdG8gd2hvbSB0aGUgU29mdHdhcmUgaXNcbiAqIGZ1cm5pc2hlZCB0byBkbyBzbywgc3ViamVjdCB0byB0aGUgZm9sbG93aW5nIGNvbmRpdGlvbnM6XG4gKlxuICogVGhlIGFib3ZlIGNvcHlyaWdodCBub3RpY2UgYW5kIHRoaXMgcGVybWlzc2lvbiBub3RpY2Ugc2hhbGwgYmUgaW5jbHVkZWQgaW4gYWxsXG4gKiBjb3BpZXMgb3Igc3Vic3RhbnRpYWwgcG9ydGlvbnMgb2YgdGhlIFNvZnR3YXJlLlxuICpcbiAqIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURFRCBcIkFTIElTXCIsIFdJVEhPVVQgV0FSUkFOVFkgT0YgQU5ZIEtJTkQsIEVYUFJFU1MgT1JcbiAqIElNUExJRUQsIElOQ0xVRElORyBCVVQgTk9UIExJTUlURUQgVE8gVEhFIFdBUlJBTlRJRVMgT0YgTUVSQ0hBTlRBQklMSVRZLFxuICogRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UgQU5EIE5PTklORlJJTkdFTUVOVC4gSU4gTk8gRVZFTlQgU0hBTEwgVEhFXG4gKiBBVVRIT1JTIE9SIENPUFlSSUdIVCBIT0xERVJTIEJFIExJQUJMRSBGT1IgQU5ZIENMQUlNLCBEQU1BR0VTIE9SIE9USEVSXG4gKiBMSUFCSUxJVFksIFdIRVRIRVIgSU4gQU4gQUNUSU9OIE9GIENPTlRSQUNULCBUT1JUIE9SIE9USEVSV0lTRSwgQVJJU0lORyBGUk9NLFxuICogT1VUIE9GIE9SIElOIENPTk5FQ1RJT04gV0lUSCBUSEUgU09GVFdBUkUgT1IgVEhFIFVTRSBPUiBPVEhFUiBERUFMSU5HUyBJTiBUSEVcbiAqIFNPRlRXQVJFLlxuICpcbiAqL1xuXG5pbXBvcnQgeyBUYXNrIH0gZnJvbSAnLi9UYXNrJztcbmltcG9ydCB7IG9rLCBSZXN1bHQgfSBmcm9tICcuL1Jlc3VsdCc7XG5cbi8qKlxuICogR2VuZXJhdGUgUmFudG9tIG51bWJlcnMuXG4gKi9cbmV4cG9ydCBjbGFzcyBSYW5kb20ge1xuICAvKipcbiAgICogR2VuZXJhdGUgYSByYW5kb20gaW50IGJldHdlZW4gbG8gYW5kIGhpXG4gICAqIEBwYXJhbSBsb1xuICAgKiBAcGFyYW0gaGlcbiAgICovXG4gIHN0YXRpYyBmcm9tSW50ZXJ2YWxJbmNsdXNpdmUobG86IG51bWJlciwgaGk6IG51bWJlcik6IFRhc2s8bmV2ZXIsIG51bWJlcj4ge1xuICAgIHJldHVybiBuZXcgUmFuZG9tVGFzayhsbywgaGkpO1xuICB9XG59XG5cbmNsYXNzIFJhbmRvbVRhc2sgZXh0ZW5kcyBUYXNrPG5ldmVyLCBudW1iZXI+IHtcbiAgcHJpdmF0ZSByZWFkb25seSBsbzogbnVtYmVyO1xuICBwcml2YXRlIHJlYWRvbmx5IGhpOiBudW1iZXI7XG5cbiAgY29uc3RydWN0b3IobG86IG51bWJlciwgaGk6IG51bWJlcikge1xuICAgIHN1cGVyKCk7XG4gICAgdGhpcy5sbyA9IGxvO1xuICAgIHRoaXMuaGkgPSBoaTtcbiAgfVxuXG4gIGV4ZWN1dGUoY2FsbGJhY2s6IChyOiBSZXN1bHQ8bmV2ZXIsIG51bWJlcj4pID0+IHZvaWQpOiB2b2lkIHtcbiAgICBjYWxsYmFjayhvayhyYW5kb21JbnRGcm9tSW50ZXJ2YWwodGhpcy5sbywgdGhpcy5oaSkpKTtcbiAgfVxufVxuXG5mdW5jdGlvbiByYW5kb21JbnRGcm9tSW50ZXJ2YWwobWluOiBudW1iZXIsIG1heDogbnVtYmVyKSB7XG4gIC8vIG1pbiBhbmQgbWF4IGluY2x1ZGVkXG4gIHJldHVybiBNYXRoLmZsb29yKE1hdGgucmFuZG9tKCkgKiAobWF4IC0gbWluICsgMSkgKyBtaW4pO1xufVxuIl19

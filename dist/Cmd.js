@@ -1,0 +1,94 @@
+"use strict";
+/*
+ * MIT License
+ *
+ * Copyright (c) 2019 Rémi Van Keisbelck
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CmdNone = exports.Cmd = void 0;
+exports.noCmd = noCmd;
+/**
+ * Base class for Commands.
+ */
+class Cmd {
+    /**
+     * Create a command that does nothing
+     */
+    static none() {
+        return new CmdNone();
+    }
+    /**
+     * Batches passed commands into a single command.
+     * @param cmds the commands to batch
+     */
+    static batch(cmds) {
+        return new BatchCmd(cmds);
+    }
+    /**
+     * Map this command, useful for parent-child scenarios.
+     * @param mapper
+     */
+    map(mapper) {
+        return new CmdMapped(this, mapper);
+    }
+}
+exports.Cmd = Cmd;
+/**
+ * A command that does nothing.
+ */
+// exported for perf optimisation reasons
+class CmdNone extends Cmd {
+    execute() {
+        // it's a noop !
+    }
+}
+exports.CmdNone = CmdNone;
+/**
+ * Utility function for transforming an object into a
+ * object/Cmd.none() tuple.
+ * @param t an object to be paired with a Cmd.none().
+ */
+function noCmd(t) {
+    return [t, Cmd.none()];
+}
+class CmdMapped extends Cmd {
+    constructor(command, mapper) {
+        super();
+        this.command = command;
+        this.mapper = mapper;
+    }
+    execute(dispatch) {
+        this.command.execute((m, f) => {
+            dispatch(this.mapper(m), f);
+        });
+    }
+}
+class BatchCmd extends Cmd {
+    constructor(cmds) {
+        super();
+        this.cmds = cmds;
+    }
+    execute(dispatch) {
+        this.cmds.forEach((cmd) => cmd.execute(dispatch));
+    }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiQ21kLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL0NtZC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBdUJHOzs7QUFzREgsc0JBRUM7QUFwREQ7O0dBRUc7QUFDSCxNQUFzQixHQUFHO0lBQ3ZCOztPQUVHO0lBQ0gsTUFBTSxDQUFDLElBQUk7UUFDVCxPQUFPLElBQUksT0FBTyxFQUFFLENBQUM7SUFDdkIsQ0FBQztJQUVEOzs7T0FHRztJQUNILE1BQU0sQ0FBQyxLQUFLLENBQU0sSUFBNkI7UUFDN0MsT0FBTyxJQUFJLFFBQVEsQ0FBQyxJQUFJLENBQUMsQ0FBQztJQUM1QixDQUFDO0lBU0Q7OztPQUdHO0lBQ0gsR0FBRyxDQUFZLE1BQTZCO1FBQzFDLE9BQU8sSUFBSSxTQUFTLENBQUMsSUFBSSxFQUFFLE1BQU0sQ0FBQyxDQUFDO0lBQ3JDLENBQUM7Q0FDRjtBQTlCRCxrQkE4QkM7QUFFRDs7R0FFRztBQUNILHlDQUF5QztBQUN6QyxNQUFhLE9BQWEsU0FBUSxHQUFRO0lBQ3hDLE9BQU87UUFDTCxnQkFBZ0I7SUFDbEIsQ0FBQztDQUNGO0FBSkQsMEJBSUM7QUFFRDs7OztHQUlHO0FBQ0gsU0FBZ0IsS0FBSyxDQUFTLENBQUk7SUFDaEMsT0FBTyxDQUFDLENBQUMsRUFBRSxHQUFHLENBQUMsSUFBSSxFQUFFLENBQUMsQ0FBQztBQUN6QixDQUFDO0FBRUQsTUFBTSxTQUEwQixTQUFRLEdBQWM7SUFJcEQsWUFBWSxPQUFpQixFQUFFLE1BQStCO1FBQzVELEtBQUssRUFBRSxDQUFDO1FBQ1IsSUFBSSxDQUFDLE9BQU8sR0FBRyxPQUFPLENBQUM7UUFDdkIsSUFBSSxDQUFDLE1BQU0sR0FBRyxNQUFNLENBQUM7SUFDdkIsQ0FBQztJQUVELE9BQU8sQ0FBQyxRQUErQjtRQUNyQyxJQUFJLENBQUMsT0FBTyxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQU0sRUFBRSxDQUFXLEVBQUUsRUFBRTtZQUMzQyxRQUFRLENBQUMsSUFBSSxDQUFDLE1BQU0sQ0FBQyxDQUFDLENBQUMsRUFBRSxDQUFDLENBQUMsQ0FBQztRQUM5QixDQUFDLENBQUMsQ0FBQztJQUNMLENBQUM7Q0FDRjtBQUVELE1BQU0sUUFBYyxTQUFRLEdBQVE7SUFHbEMsWUFBWSxJQUE2QjtRQUN2QyxLQUFLLEVBQUUsQ0FBQztRQUNSLElBQUksQ0FBQyxJQUFJLEdBQUcsSUFBSSxDQUFDO0lBQ25CLENBQUM7SUFFRCxPQUFPLENBQUMsUUFBeUI7UUFDL0IsSUFBSSxDQUFDLElBQUksQ0FBQyxPQUFPLENBQUMsQ0FBQyxHQUFHLEVBQUUsRUFBRSxDQUFDLEdBQUcsQ0FBQyxPQUFPLENBQUMsUUFBUSxDQUFDLENBQUMsQ0FBQztJQUNwRCxDQUFDO0NBQ0YiLCJzb3VyY2VzQ29udGVudCI6WyIvKlxuICogTUlUIExpY2Vuc2VcbiAqXG4gKiBDb3B5cmlnaHQgKGMpIDIwMTkgUsOpbWkgVmFuIEtlaXNiZWxja1xuICpcbiAqIFBlcm1pc3Npb24gaXMgaGVyZWJ5IGdyYW50ZWQsIGZyZWUgb2YgY2hhcmdlLCB0byBhbnkgcGVyc29uIG9idGFpbmluZyBhIGNvcHlcbiAqIG9mIHRoaXMgc29mdHdhcmUgYW5kIGFzc29jaWF0ZWQgZG9jdW1lbnRhdGlvbiBmaWxlcyAodGhlIFwiU29mdHdhcmVcIiksIHRvIGRlYWxcbiAqIGluIHRoZSBTb2Z0d2FyZSB3aXRob3V0IHJlc3RyaWN0aW9uLCBpbmNsdWRpbmcgd2l0aG91dCBsaW1pdGF0aW9uIHRoZSByaWdodHNcbiAqIHRvIHVzZSwgY29weSwgbW9kaWZ5LCBtZXJnZSwgcHVibGlzaCwgZGlzdHJpYnV0ZSwgc3VibGljZW5zZSwgYW5kL29yIHNlbGxcbiAqIGNvcGllcyBvZiB0aGUgU29mdHdhcmUsIGFuZCB0byBwZXJtaXQgcGVyc29ucyB0byB3aG9tIHRoZSBTb2Z0d2FyZSBpc1xuICogZnVybmlzaGVkIHRvIGRvIHNvLCBzdWJqZWN0IHRvIHRoZSBmb2xsb3dpbmcgY29uZGl0aW9uczpcbiAqXG4gKiBUaGUgYWJvdmUgY29weXJpZ2h0IG5vdGljZSBhbmQgdGhpcyBwZXJtaXNzaW9uIG5vdGljZSBzaGFsbCBiZSBpbmNsdWRlZCBpbiBhbGxcbiAqIGNvcGllcyBvciBzdWJzdGFudGlhbCBwb3J0aW9ucyBvZiB0aGUgU29mdHdhcmUuXG4gKlxuICogVEhFIFNPRlRXQVJFIElTIFBST1ZJREVEIFwiQVMgSVNcIiwgV0lUSE9VVCBXQVJSQU5UWSBPRiBBTlkgS0lORCwgRVhQUkVTUyBPUlxuICogSU1QTElFRCwgSU5DTFVESU5HIEJVVCBOT1QgTElNSVRFRCBUTyBUSEUgV0FSUkFOVElFUyBPRiBNRVJDSEFOVEFCSUxJVFksXG4gKiBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRSBBTkQgTk9OSU5GUklOR0VNRU5ULiBJTiBOTyBFVkVOVCBTSEFMTCBUSEVcbiAqIEFVVEhPUlMgT1IgQ09QWVJJR0hUIEhPTERFUlMgQkUgTElBQkxFIEZPUiBBTlkgQ0xBSU0sIERBTUFHRVMgT1IgT1RIRVJcbiAqIExJQUJJTElUWSwgV0hFVEhFUiBJTiBBTiBBQ1RJT04gT0YgQ09OVFJBQ1QsIFRPUlQgT1IgT1RIRVJXSVNFLCBBUklTSU5HIEZST00sXG4gKiBPVVQgT0YgT1IgSU4gQ09OTkVDVElPTiBXSVRIIFRIRSBTT0ZUV0FSRSBPUiBUSEUgVVNFIE9SIE9USEVSIERFQUxJTkdTIElOIFRIRVxuICogU09GVFdBUkUuXG4gKlxuICovXG5cbmltcG9ydCB7IERpc3BhdGNoZXIgfSBmcm9tICcuL0Rpc3BhdGNoZXInO1xuXG4vKipcbiAqIEJhc2UgY2xhc3MgZm9yIENvbW1hbmRzLlxuICovXG5leHBvcnQgYWJzdHJhY3QgY2xhc3MgQ21kPE1zZz4ge1xuICAvKipcbiAgICogQ3JlYXRlIGEgY29tbWFuZCB0aGF0IGRvZXMgbm90aGluZ1xuICAgKi9cbiAgc3RhdGljIG5vbmU8TXNnPigpOiBDbWQ8TXNnPiB7XG4gICAgcmV0dXJuIG5ldyBDbWROb25lKCk7XG4gIH1cblxuICAvKipcbiAgICogQmF0Y2hlcyBwYXNzZWQgY29tbWFuZHMgaW50byBhIHNpbmdsZSBjb21tYW5kLlxuICAgKiBAcGFyYW0gY21kcyB0aGUgY29tbWFuZHMgdG8gYmF0Y2hcbiAgICovXG4gIHN0YXRpYyBiYXRjaDxNc2c+KGNtZHM6IFJlYWRvbmx5QXJyYXk8Q21kPE1zZz4+KTogQ21kPE1zZz4ge1xuICAgIHJldHVybiBuZXcgQmF0Y2hDbWQoY21kcyk7XG4gIH1cblxuICAvKipcbiAgICogQ29uY3JldGUgQ29tbWFuZHMgc2hvdWxkIGltcGxlbWVudCB0aGlzIG1ldGhvZCxcbiAgICogd2hlcmUgdGhlIGFjdHVhbCBjb21tYW5kIHdvcmsgaXMgZG9uZS5cbiAgICogQHBhcmFtIGRpc3BhdGNoIHRoZSBkaXNwYXRjaGVyXG4gICAqL1xuICBhYnN0cmFjdCBleGVjdXRlKGRpc3BhdGNoOiBEaXNwYXRjaGVyPE1zZz4pOiB2b2lkO1xuXG4gIC8qKlxuICAgKiBNYXAgdGhpcyBjb21tYW5kLCB1c2VmdWwgZm9yIHBhcmVudC1jaGlsZCBzY2VuYXJpb3MuXG4gICAqIEBwYXJhbSBtYXBwZXJcbiAgICovXG4gIG1hcDxQYXJlbnRNc2c+KG1hcHBlcjogKGM6IE1zZykgPT4gUGFyZW50TXNnKTogQ21kPFBhcmVudE1zZz4ge1xuICAgIHJldHVybiBuZXcgQ21kTWFwcGVkKHRoaXMsIG1hcHBlcik7XG4gIH1cbn1cblxuLyoqXG4gKiBBIGNvbW1hbmQgdGhhdCBkb2VzIG5vdGhpbmcuXG4gKi9cbi8vIGV4cG9ydGVkIGZvciBwZXJmIG9wdGltaXNhdGlvbiByZWFzb25zXG5leHBvcnQgY2xhc3MgQ21kTm9uZTxNc2c+IGV4dGVuZHMgQ21kPE1zZz4ge1xuICBleGVjdXRlKCk6IHZvaWQge1xuICAgIC8vIGl0J3MgYSBub29wICFcbiAgfVxufVxuXG4vKipcbiAqIFV0aWxpdHkgZnVuY3Rpb24gZm9yIHRyYW5zZm9ybWluZyBhbiBvYmplY3QgaW50byBhXG4gKiBvYmplY3QvQ21kLm5vbmUoKSB0dXBsZS5cbiAqIEBwYXJhbSB0IGFuIG9iamVjdCB0byBiZSBwYWlyZWQgd2l0aCBhIENtZC5ub25lKCkuXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBub0NtZDxULCBNc2c+KHQ6IFQpOiBbVCwgQ21kPE1zZz5dIHtcbiAgcmV0dXJuIFt0LCBDbWQubm9uZSgpXTtcbn1cblxuY2xhc3MgQ21kTWFwcGVkPE1zZywgUGFyZW50TXNnPiBleHRlbmRzIENtZDxQYXJlbnRNc2c+IHtcbiAgcHJpdmF0ZSByZWFkb25seSBjb21tYW5kOiBDbWQ8TXNnPjtcbiAgcHJpdmF0ZSByZWFkb25seSBtYXBwZXI6IChzdWI6IE1zZykgPT4gUGFyZW50TXNnO1xuXG4gIGNvbnN0cnVjdG9yKGNvbW1hbmQ6IENtZDxNc2c+LCBtYXBwZXI6IChzdWI6IE1zZykgPT4gUGFyZW50TXNnKSB7XG4gICAgc3VwZXIoKTtcbiAgICB0aGlzLmNvbW1hbmQgPSBjb21tYW5kO1xuICAgIHRoaXMubWFwcGVyID0gbWFwcGVyO1xuICB9XG5cbiAgZXhlY3V0ZShkaXNwYXRjaDogRGlzcGF0Y2hlcjxQYXJlbnRNc2c+KTogdm9pZCB7XG4gICAgdGhpcy5jb21tYW5kLmV4ZWN1dGUoKG06IE1zZywgZj86IGJvb2xlYW4pID0+IHtcbiAgICAgIGRpc3BhdGNoKHRoaXMubWFwcGVyKG0pLCBmKTtcbiAgICB9KTtcbiAgfVxufVxuXG5jbGFzcyBCYXRjaENtZDxNc2c+IGV4dGVuZHMgQ21kPE1zZz4ge1xuICBwcml2YXRlIHJlYWRvbmx5IGNtZHM6IFJlYWRvbmx5QXJyYXk8Q21kPE1zZz4+O1xuXG4gIGNvbnN0cnVjdG9yKGNtZHM6IFJlYWRvbmx5QXJyYXk8Q21kPE1zZz4+KSB7XG4gICAgc3VwZXIoKTtcbiAgICB0aGlzLmNtZHMgPSBjbWRzO1xuICB9XG5cbiAgZXhlY3V0ZShkaXNwYXRjaDogRGlzcGF0Y2hlcjxNc2c+KTogdm9pZCB7XG4gICAgdGhpcy5jbWRzLmZvckVhY2goKGNtZCkgPT4gY21kLmV4ZWN1dGUoZGlzcGF0Y2gpKTtcbiAgfVxufVxuIl19
